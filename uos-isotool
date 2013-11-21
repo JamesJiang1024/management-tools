@@ -1,0 +1,82 @@
+#!/bin/bash
+
+################### FILE Parameters #########################
+SCRIPT_NAME=$(basename $0)
+SCRIPT_HOME=$(dirname $0)
+
+
+################### ISO Generate Parameters ################### 
+SAGEUSB=${SAGEUSB-:/data1/dailybuild/sage-usb}
+SAGE_TARGET=${SAGE_TARGET-:/data1/mirrors/uos/dailybuild}
+TARGET_ISO_NAME=${TARGET_ISO_NAME-:uOS.iso}
+SCENE=${SCENE-:dailybuild}
+
+################### Package Parameters ####################
+MAKE_PACKAGE=${MAKE_PACKAGE-1}
+
+
+################### SYNC Parameters #######################
+NEED_SYNC=${NEED_SYNC-:1}
+SYNC_TARGET=${SYNC_TARGET-:root@192.168.10.3:/home/uos/dailybuild/}
+
+
+function show_options(){
+      echo "Usage $SCRIPT_NAME [options] command name"
+      echo 
+      echo "Manage dailybuid and release of uos"
+      echo "DailyBuild Command:" 
+      echo "   dailybuild    -- command to dailybuild"
+      echo "Release Command:" 
+      echo "   release        -- command to release"
+}
+
+
+function build_rpm(){
+    if [ $MAKE_PACKAGE == 1 ] 
+    then
+        if [ $SCENE == "dailybuild" ]
+        then 
+            echo "ISO Stage : Daily Build RPM  "`date`
+            rpm_dailybuild  
+        elif [ $SCENE == "release" ]
+            echo "ISO Stage : Release Build RPM  "`date`
+            rpm_release
+        fi 
+    fi
+}
+
+function sync_test_env(){
+    if [ $NEED_SYNC== 1 ]
+    then
+        echo "ISO Stage : Sync To UOS Test Env"`date`
+        rsync -rP $SAGE_TARGET/* $SYNC_TARGET 
+    fi
+}
+
+function generate_iso(){
+    echo "ISO Stage Begin : Build ISO  "`date`
+    $SAGEUSB/iso.sh
+    echo "ISO Stage : Archive ISO  "`date`
+    cp -f $SAGEUSB/uOS.iso $SAGE_TARGET/$TARGET_ISO_NAME
+}
+
+if [ $# -gt 0 ]
+then
+    if [ $1 == "dailybuild" ]
+        export SCENE="dailybuild" 
+        export SAGEUSB="/data1/dailybuild/sage-usb" 
+        export SAGE_TARGET="/data1/mirrors/uos/dailybuild"
+        export TARGET_ISO_NAME="uOS.iso"
+    elif [ $1 == "release" ]
+        export SCENE="release" 
+        export SAGEUSB="/data1/release/sage-usb" 
+        export SAGE_TARGET="/data1/mirrors/uos/release"
+        export TARGET_ISO_NAME="$2"
+    fi
+    build_rpm
+    generate_iso
+    sync_test_env 
+else
+    echo "Please enter the command"
+    show_options
+fi

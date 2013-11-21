@@ -5,5 +5,7 @@
 export UPDATE_BASE_DIR=/data1/dailybuild/source
 export UPDATE_RPM_DIR=/data1/dailybuild/rpmbuild
 export UPDATE_REPO_DIR=/data1/mirrors/ustack/RPMS/x86_64
+export CODE_TARGET=master
+export SCENE=dailybuild
 
-source /data1/dailybuild/rpmbuilder/rpmbuild.sh
+source /data1/rpmbuilder/rpmbuild.sh
