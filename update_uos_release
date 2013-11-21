@@ -1,0 +1,10 @@
+#!/bin/bash
+# This script is aim to do follow things:
+# Pull latest spec file from gitorious from run rpmbuild to package.
+#set -e
+
+export UPDATE_BASE_DIR=/data1/release/source
+export UPDATE_RPM_DIR=/data1/release/rpmbuild
+export UPDATE_REPO_DIR=/data1/mirrors/ustack-release/RPMS/x86_64
+
+source /data1/dailybuild/rpmbuilder/rpmbuild.sh

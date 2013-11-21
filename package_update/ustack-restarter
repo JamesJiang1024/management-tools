@@ -1,0 +1,43 @@
+#!/bin/bash
+
+function restart_rsync(){
+     #获取需要杀掉的进程号
+     KILLINGPROCESS=`ps -aux | grep rsync | grep /home/yum | awk '{print $2}'`
+
+     #杀掉相应的rsync进程
+     echo "kill process rsync"  >> /var/log/test
+     date >> /var/log/test
+
+     for a in $KILLINGPROCESS
+     do kill -9 $a
+     done
+
+     #重新启动服务
+     /etc/init.d/ustack-rpm-update&
+
+     echo "restart success" >> /var/log/test
+}
+
+#获取当前进程每一个数据包的大小
+number=0
+tcpdump -c 10 -nn port 873 > /dev/tem & 
+sleep 10
+kill -9 $!
+tcp=`cat /dev/tem | awk -F, '{print $5}' | grep length | awk '{print $2}'`
+
+#确认是否正确拉数据
+for t in $tcp
+do 
+  if [ $t -gt 800 ]
+  then 
+      let "number=$number+1"
+  fi
+done
+
+if [ $number -gt 0 ]
+then 
+    echo "isok"
+    echo "/home/yum rsync is ok" >> /var/log/test 
+else 
+    restart_rsync
+fi
