@@ -1,3 +1,4 @@
 source /root/.sync_unset
 export SYNC_SRC="/data1/mirrors/ustack/*"
 export SYNC_DST="/data1/mirrors/ustack-stable/"
+update_env

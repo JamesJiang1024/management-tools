@@ -8,4 +8,4 @@ export UPDATE_REPO_DIR=/data1/mirrors/ustack/RPMS/x86_64
 export CODE_TARGET=master
 export SCENE=dailybuild
 
-source /data1/rpmbuilder/rpmbuild.sh
+source /opt/ustack/rpmbuilder/rpmbuild.sh all 
