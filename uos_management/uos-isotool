@@ -50,7 +50,7 @@ function sync_test_env(){
     if [ $NEED_SYNC == 1 ]
     then
         echo "ISO Stage : Sync To UOS Test Env"`date`
-        rsync -rP $SAGE_TARGET/* $SYNC_TARGET 
+        rsync -rP $SAGEUSB/uOS.iso $SYNC_TARGET/uOS.iso 
     fi
 }
 
@@ -68,7 +68,8 @@ then
         export SCENE="dailybuild" 
         export SAGEUSB="/data1/dailybuild/sage-usb" 
         export SAGE_TARGET="/data1/mirrors/uos/dailybuild"
-        export TARGET_ISO_NAME="uOS.iso"
+        today=`date +%Y-%m-%d`
+        export TARGET_ISO_NAME="uOS-dayilbuild-$today.iso"
     else
         export SCENE="release" 
         export SAGEUSB="/data1/release/sage-usb" 
